@@ -1,0 +1,9 @@
+Task:
+        Given a document, find out the topic of this document. If possible, find out the place where this document may be published, who/which organization wrote this document.
+        
+Data:
+        The data comes from UCI Machine Learning Repository(https://archive.ics.uci.edu/ml/datasets/Reuters-21578+Text+Categorization+Collection). There are about 21,000 documents labeled with topic, publisher and place. The data is formed like sgml format. We need preprocess the data and labels. There are totally 135 topics, 175 places, 267 people and 56 organizations in the data.
+
+baseline:
+        1. Naive Bayes: Our task is basically a classification problem. So we can use Naive Bayes as our baseline.  
+        2. Contribution-based algorithm: We computer the contribution of each word to each topic/place/people/organization from training set. For a document we sum up the total contribution of all words. Select the topic/place/people/organization with highest value as the result.

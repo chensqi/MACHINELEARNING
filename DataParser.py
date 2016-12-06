@@ -14,7 +14,7 @@ class dataParser(SGMLParser):
         self.isbody=False
         self.isd=False
         self.hastopic=False
-        self.o = DictWriter(open("data/data.csv", 'w'), ["topic", "title","body"])
+        self.o = DictWriter(open("data/data.csv", 'w'), [u"topic", u"title",u"body"])
         self.o.writeheader()
     def readData(self,path):
         f=open(path,'r')
@@ -64,13 +64,13 @@ class dataParser(SGMLParser):
         if self.hastopic:
             if self.isd:
                 if self.istopic:
-                    if(not len(self.curtop)==0):
-                        self.curtop+='/'
-                    self.curtop+=data
+                    if(len(self.curtop)==0):
+                        #self.curtop+='/'
+                        self.curtop+=data
             elif self.istopic:
-                if (not len(self.curtop) == 0):
-                    self.curtop += '/'
-                self.curtop += data
+                if (len(self.curtop) == 0):
+                    #self.curtop += '/'
+                    self.curtop += data
 
             elif self.isbody:
                 self.curbody+=data
@@ -83,7 +83,8 @@ class dataParser(SGMLParser):
         print self.topic
     def writeData(self):
         for ii, jj,kk in zip(self.topic, self.title,self.body):
-            d = {'topic': ii, 'title':jj,'body': kk}
+            print ii, jj, kk
+            d = {'topic': ii.decode("utf-8",'ignore'), 'title': jj.decode("utf-8",'ignore'),'body': kk.decode("utf-8",'ignore')}
             self.o.writerow(d)
 
 if __name__ == "__main__":
