@@ -123,8 +123,8 @@ def baseline(train_x,train_y,test_x,test_y):
 if __name__ == "__main__":
 
     # Cast to list to keep it all in memory
-    train = list(DictReader(open("./data/data.csv", 'r')))
-    #test = list(DictReader(open("../data/spoilers/test.csv", 'r')))
+    train = list(DictReader(open("./data/data_train.csv", 'r')))
+    test = list(DictReader(open("./data/data_test.csv", 'r')))
 
     feat = Featurizer()
 
@@ -134,14 +134,15 @@ if __name__ == "__main__":
     for line in train:
         if not line[labelCol] in labels:
             labels.append(line[labelCol])
-    cut = len(train) * 4 / 5 
-    test = train[cut:]
-    train = train[:cut]
 
-    print("Label set: %s" % str(labels))
-    print len(labels)
+    for line in test:
+        if not line[labelCol] in labels:
+            labels.append(line[labelCol])
+
+    #print("Label set: %s" % str(labels))
+   #print len(labels)
     x_train = feat.train_feature(x['body'] for x in train)
-    y_train = array(list(labels.index(x[labelCol]) for x in train))       
+    y_train = array(list(labels.index(x[labelCol]) for x in train))
     x_test = feat.test_feature(x['body'] for x in test)
     y_test = array(list(labels.index(x[labelCol]) for x in test) )
     baseline(x_train,y_train,x_test,y_test)

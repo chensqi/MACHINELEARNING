@@ -6,16 +6,21 @@ class dataParser(SGMLParser):
         self.title=[]
         self.topic=[]
         self.body=[]
+        self.labels=[]
         self.curti=''
         self.curtop=''
         self.curbody=''
+        self.label=0
         self.istopic=False
         self.istitle=False
         self.isbody=False
         self.isd=False
+        self.islabel=False
         self.hastopic=False
-        self.o = DictWriter(open("data/data.csv", 'w'), [u"topic", u"title",u"body"])
-        self.o.writeheader()
+        self.otrain = DictWriter(open("data/data_train.csv", 'w'), [u"topic", u"title",u"body"])
+        self.otrain.writeheader()
+        self.otest = DictWriter(open("data/data_test.csv", 'w'), [u"topic", u"title",u"body"])
+        self.otest.writeheader()
     def readData(self,path):
         f=open(path,'r')
         SGMLParser.feed(self,f.read())
@@ -26,12 +31,20 @@ class dataParser(SGMLParser):
                     self.hastopic=True
                 elif j=='NO':
                     self.hastopic=False
+            elif i=="lewissplit":
+                if j=='TRAIN':
+                    self.label=0
+                elif j=='TEST':
+                    self.label=1
+                else:
+                    self.label=2
 
     def end_reuters(self):
         if(not len(self.curtop)==0):
             self.topic.append(self.curtop)
             self.body.append(self.curbody)
             self.title.append(self.curti)
+            self.labels.append(self.label)
             self.curti = ''
             self.curtop = ''
             self.curbody = ''
@@ -59,7 +72,6 @@ class dataParser(SGMLParser):
     def end_body(self):
         if self.isbody:
             self.isbody=False
-
     def handle_data(self, data):
         if self.hastopic:
             if self.isd:
@@ -82,10 +94,17 @@ class dataParser(SGMLParser):
         print len(self.body)
         print self.topic
     def writeData(self):
-        for ii, jj,kk in zip(self.topic, self.title,self.body):
-            print ii, jj, kk
-            d = {'topic': ii.decode("utf-8",'ignore'), 'title': jj.decode("utf-8",'ignore'),'body': kk.decode("utf-8",'ignore')}
-            self.o.writerow(d)
+        for ii, jj,kk,ll in zip(self.topic, self.title,self.body,self.labels):
+            # print ii, jj, kk
+            if(ll==0):
+                d = {'topic': ii.decode("utf-8", 'ignore'), 'title': jj.decode("utf-8", 'ignore'),
+                     'body': kk.decode("utf-8", 'ignore')}
+                self.otrain.writerow(d)
+            elif(ll==1):
+                d = {'topic': ii.decode("utf-8", 'ignore'), 'title': jj.decode("utf-8", 'ignore'),
+                     'body': kk.decode("utf-8", 'ignore')}
+                self.otest.writerow(d)
+
 
 if __name__ == "__main__":
     d=dataParser()
